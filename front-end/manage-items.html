@@ -10,12 +10,12 @@
             href="node_modules/bootstrap/dist/css/bootstrap.min.css"
     />
     <link rel="stylesheet" href="css/styles.css" />
-    <link rel="stylesheet" href="css/manage-items.css.css" />
+    <link rel="stylesheet" href="css/manage-items.css" />
     <script defer src="node_modules/jquery/dist/jquery.min.js"></script>
     <script defer src="node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
     <script defer src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script defer src="js/main.js"></script>
-    <script defer src="js/manage-items.js.js"></script>
+    <script defer src="js/manage-items.js"></script>
 </head>
 <body class="container-xl gx-0 border-end border-start">
 <svg xmlns="http://www.w3.org/2000/svg" style="display: none">
@@ -199,7 +199,7 @@
                 <th class="text-center">Code</th>
                 <th>Description</th>
                 <th class="d-none d-xl-table-cell">Quantity</th>
-                <th class="contact text-center">Price</th>
+                <th class="price text-center">Price</th>
                 <th></th>
             </tr>
             </thead>
@@ -208,7 +208,7 @@
                 <td class="text-center">I001</td>
                 <td>Key Board</td>
                 <td class="d-none d-xl-table-cell">10</td>
-                <td class="contact text-center">1000</td>
+                <td class="price text-center">1000</td>
                 <td>
                     <div class="actions d-flex gap-3 justify-content-center">
                         <svg class="bi bi-pencil-square" data-bs-title="Edit Customer" data-bs-toggle="tooltip"
@@ -296,7 +296,7 @@
                             class="form-control text-center"
                             id="txt-quantity"
                             placeholder="Eg: 10"
-                            type="text"
+                            type="number"
                     />
                     <div class="invalid-feedback">
 
@@ -310,7 +310,7 @@
                             class="form-control text-center"
                             id="txt-price"
                             placeholder="Eg: 1000"
-                            type="text"
+                            type="number"
                     />
                     <div class="invalid-feedback ">
 

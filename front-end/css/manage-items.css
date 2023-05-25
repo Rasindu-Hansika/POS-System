@@ -1,0 +1,30 @@
+#tbl-products thead tr th:first-child,
+#tbl-products thead tr td:first-child{
+    width: 70px;
+}
+
+#tbl-products thead tr th:last-child,
+#tbl-products thead tr td:last-child{
+    width: 70px;
+}
+
+.price {
+    max-width: 110px;
+    word-wrap: break-word;
+}
+
+#tbl-products tbody tr {
+    cursor: pointer;
+}
+
+.actions svg:first-child:hover {
+    fill: green;
+}
+
+.actions svg:last-child:hover {
+    fill: red;
+}
+#loader{
+    transform: scale(0.6);
+    /*visibility: hidden;*/
+}

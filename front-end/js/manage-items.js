@@ -1,4 +1,4 @@
-$("#tbl-products tbody").empty();
+// $("#tbl-products tbody").empty();
 
 const tbodyElm = $("#tbl-products tbody");
 const modalElm = $("#new-product-modal");

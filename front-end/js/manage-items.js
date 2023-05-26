@@ -1,4 +1,4 @@
-// $("#tbl-products tbody").empty();
+$("#tbl-products tbody").empty();
 
 const tbodyElm = $("#tbl-products tbody");
 const modalElm = $("#new-product-modal");
@@ -84,7 +84,7 @@ function validateData() {
 
     if (!price) {
         valid = inValidate(txtPrice, "Price can't be Empty");
-    } else if (!/^\d+$/.test(price)) {
+    } else if (!/^[\d.]+$/.test(price)) {
         valid = inValidate(txtPrice, "Invalid Price");
     }
 
@@ -120,7 +120,7 @@ function resetForm(clearData) {
 function createRow(product) {
     tbodyElm.append(`
     <tr>
-    <td class="text-center">${formatCustomerId(product.code)}</td>
+    <td class="text-center">${formatCode(product.code)}</td>
     <td>${product.description}</td>
     <td class="d-none d-xl-table-cell">${product.quantity}/td>
     <td class="contact text-center">${product.price}</td>

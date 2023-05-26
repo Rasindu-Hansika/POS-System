@@ -6,6 +6,7 @@ const txtId = $("#txt-id");
 const txtName = $("#txt-name");
 const txtContact = $("#txt-contact");
 const txtAddress = $("#txt-address");
+
 const btnSave = $("#btn-save");
 
 function formatCustomerId(id) {
@@ -40,12 +41,12 @@ btnSave.on("click", () => {
     //2.Set an event listener to listen  readyState change
     xhr.addEventListener('readystatechange', () => {
         if (xhr.readyState === 4) {
-            [txtId,txtName,txtName,txtAddress,btnSave].forEach(txt=>{
+            [txtId, txtName, txtName, txtAddress, btnSave].forEach(txt => {
                 txt.removeAttr('disabled');
             })
             $('#loader').css('visibility', 'hidden');
             if (xhr.status === 201) {
-                customer= JSON.parse(xhr.responseText);
+                customer = JSON.parse(xhr.responseText);
                 createRow(customer);
                 resetForm(true);
                 txtName.trigger("focus");
@@ -63,15 +64,14 @@ btnSave.on("click", () => {
 
     //4.let's Set Headers
     xhr.setRequestHeader('Content-Type', 'application/json');
-
+    progressBar(xhr);
     //5.Sent the Request
     xhr.send(JSON.stringify(customer));
 
-    [txtId,txtName,txtName,txtAddress,btnSave].forEach(txt=>{
+    [txtId, txtName, txtName, txtAddress, btnSave].forEach(txt => {
         txt.attr('disabled', 'true');
     })
     $('#loader').css('visibility', 'visible');
-
 
 
 });
@@ -166,3 +166,92 @@ function showToast(type, header, body) {
     $("#toast .toast-body").text(body);
     $("#toast .toast").toast("show");
 }
+
+const txtSearch = $("#txt-search");
+
+function getCustomers() {
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", () => {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                tbodyElm.empty();
+                const customerList = JSON.parse(xhr.responseText);
+                customerList.forEach(customer => {
+                    createRow(customer)
+                });
+                if (customerList.length) {
+                    $("#tbl-customers tfoot").hide();
+                } else {
+                    $("#tbl-customers tfoot").show();
+                }
+            } else {
+                tbodyElm.empty();
+                $("tbl-customers tfoot").show();
+                showToast('error', "Failed", "Failed to fetch data");
+                console.log(JSON.parse(xhr.responseText));
+            }
+        }
+    });
+    const query = (txtSearch.val().trim()) ? `?q=${txtSearch.val().trim()}` : "";
+    xhr.open("GET", "http://localhost:8080/pos/customers" + query, true);
+
+
+    const tfoot =$('#tbl-customers tfoot tr td:first-child');
+    xhr.addEventListener('loadstart', () => tfoot.text('Please Wait!'));
+    xhr.addEventListener('loadend', () => tfoot.text('No Customer Records are found'));
+
+
+
+
+
+    xhr.send();
+}
+
+getCustomers();
+
+txtSearch.on('input', () => {
+    getCustomers()
+});
+
+function progressBar(xhr) {
+    const bar = $('#progressbar');
+    xhr.addEventListener('loadstart', () => bar.width('0%'));
+    xhr.addEventListener('progress', (eventData) => {
+        const downloadedByes = eventData.loaded;
+        const totalBytes = eventData.total;
+        const progress = downloadedByes / totalBytes * 100;
+        bar.width(`${progress}`);
+    });
+
+    xhr.addEventListener('loadend', () => {
+        bar.width('100%');
+        setTimeout(() => bar.width('0%'), 500)
+    });
+
+}
+
+// tbodyElm.on('click','tr>td:last-child>div>svg:last-child',()=>{
+//     $(document.activeElement).css('background-color','red')
+//     const row=$(document.activeElement).children();
+//     alert(row.text());
+//     const idNew=$(document.activeElement).parents('tr').children("td:first-child").text();
+//     alert(idNew);
+//     let customer = {idNew};
+//     const xhr = new XMLHttpRequest();
+//     xhr.addEventListener('readystatechange', () => {
+//         if (xhr.readyState === 4) {
+//             if (xhr.status === 200 || xhr.status===204 || xhr.status===202) {
+//                 row.remove();
+//                 showToast("success", "Success", "Customer has been Removed successfully");
+//             } else {
+//                 const errorObj = JSON.parse(xhr.responseText);
+//                 showToast("error", 'Failed', errorObj.message);
+//
+//             }
+//         }
+//     });
+//     xhr.open("DELETE", 'http://localhost:8080/pos/customers', true);
+//     xhr.setRequestHeader('Content-Type', 'application/json');
+//     xhr.send(JSON.stringify(customer));
+//
+// })

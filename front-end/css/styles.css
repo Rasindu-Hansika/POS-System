@@ -101,3 +101,12 @@ main{
         transform: rotate(360deg);
     }
 }
+
+#progressbar{
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 4px;
+    background-color: #0b5ed7;
+    z-index: 100;
+}

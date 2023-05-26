@@ -31,11 +31,7 @@ btnSave.on("click", () => {
     const price = txtPrice.val().trim();
 
     let product = {description, quantity, price}
-    // Todo:Send as request to the server to save the customer
-    //1.create a XHR object
     const xhr = new XMLHttpRequest();
-
-    //2.Set an event listener to listen  readyState change
     xhr.addEventListener('readystatechange', () => {
         if (xhr.readyState === 4) {
             [txtCode,txtDescription,txtQuantity,txtPrice,btnSave].forEach(txt=>{
@@ -55,16 +51,9 @@ btnSave.on("click", () => {
             }
         }
     });
-
-    //3. Let's open the request
     xhr.open("POST", 'http://localhost:8080/pos/products', true);
-
-    //4.let's Set Headers
     xhr.setRequestHeader('Content-Type', 'application/json');
-
-    //5.Sent the Request
     xhr.send(JSON.stringify(product));
-
     [txtCode,txtDescription,txtQuantity,txtPrice,btnSave].forEach(txt=>{
         txt.attr('disabled', 'true');
     })
@@ -164,3 +153,38 @@ function showToast(type, header, body) {
     $("#toast .toast-body").text(body);
     $("#toast .toast").toast("show");
 }
+
+const txtSearch = $("#txt-search");
+function getProducts() {
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", () => {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                tbodyElm.empty();
+                const productList = JSON.parse(xhr.responseText);
+                productList.forEach(product => {
+                    createRow(product)
+                });
+                if (productList.length) {
+                    $("#tbl-products tfoot").hide();
+                } else {
+                    $("#tbl-products tfoot").show();
+                }
+            } else {
+                tbodyElm.empty();
+                $("tbl-products tfoot").show();
+                showToast('error', "Failed", "Failed to fetch data");
+                console.log(JSON.parse(xhr.responseText));
+            }
+        }
+    });
+    const query = (txtSearch.val().trim()) ? `?q=${txtSearch.val().trim()}` : "";
+    xhr.open("GET", "http://localhost:8080/pos/products" + query, true);
+    xhr.send();
+}
+
+getProducts();
+
+txtSearch.on('input', () => {
+    getProducts()
+});

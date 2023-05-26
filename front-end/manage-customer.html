@@ -197,6 +197,7 @@
                 aria-describedby="basic-addon1"
                 aria-label="Username"
                 class="form-control text-center"
+                id="txt-search"
                 placeholder="Search Customers"
                 type="text"
         />
@@ -330,7 +331,16 @@
 
             <div class="modal-footer d-flex justify-content-between">
                 <div id="loader">
-                    <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+                    <div class="lds-roller">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                    </div>
                 </div>
                 <button class="btn btn-primary" id="btn-save" type="button">Save Customer</button>
             </div>
@@ -338,7 +348,7 @@
     </div>
 </div>
 
-//Toast
+
 <div class="toast-container position-fixed bottom-0 start-50 translate-middle-x p-3" id="toast">
     <div aria-atomic="true" aria-live="assertive" class="toast" data-bs-autohide="true" data-bs-delay="1500"
          id="liveToast"
@@ -351,5 +361,7 @@
         </div>
     </div>
 </div>
+<div id="progressbar"></div>
+
 </body>
 </html>

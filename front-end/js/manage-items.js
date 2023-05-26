@@ -40,7 +40,7 @@ btnSave.on("click", () => {
             $('#loader').css('visibility', 'hidden');
             if (xhr.status === 201) {
                 product= JSON.parse(xhr.responseText);
-                createRow(product);
+                getProducts();
                 resetForm(true);
                 txtDescription.trigger("focus");
                 showToast("success", "Success", "Product has been saved successfully");
@@ -53,6 +53,7 @@ btnSave.on("click", () => {
     });
     xhr.open("POST", 'http://localhost:8080/pos/products', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
+    progressBar(xhr);
     xhr.send(JSON.stringify(product));
     [txtCode,txtDescription,txtQuantity,txtPrice,btnSave].forEach(txt=>{
         txt.attr('disabled', 'true');
@@ -116,14 +117,14 @@ function createRow(product) {
     <td>
         <div class="actions d-flex gap-3 justify-content-center">
             <svg data-bs-toggle="tooltip" data-bs-title="Edit Customer" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                class="bi bi-pencil-square" viewBox="0 0 16 16">
+                class="bi bi-pencil-square edit" viewBox="0 0 16 16">
                 <path
                     d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                 <path fill-rule="evenodd"
                     d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
             </svg>
             <svg data-bs-toggle="tooltip" data-bs-title="Delete Customer" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                class="bi bi-trash" viewBox="0 0 16 16">
+                class="bi bi-trash delete" viewBox="0 0 16 16">
                 <path
                     d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                 <path
@@ -165,6 +166,8 @@ function getProducts() {
                 productList.forEach(product => {
                     createRow(product)
                 });
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
                 if (productList.length) {
                     $("#tbl-products tfoot").hide();
                 } else {
@@ -180,6 +183,9 @@ function getProducts() {
     });
     const query = (txtSearch.val().trim()) ? `?q=${txtSearch.val().trim()}` : "";
     xhr.open("GET", "http://localhost:8080/pos/products" + query, true);
+    const tfoot =$('#tbl-customers tfoot tr td:first-child');
+    xhr.addEventListener('loadstart', () => tfoot.text('Please Wait!'));
+    xhr.addEventListener('loadend', () => tfoot.text('No Customer Records are found'));
     xhr.send();
 }
 
@@ -188,3 +194,37 @@ getProducts();
 txtSearch.on('input', () => {
     getProducts()
 });
+
+function progressBar(xhr) {
+    const bar = $('#progressbar');
+    xhr.addEventListener('loadstart', () => bar.width('0%'));
+    xhr.addEventListener('progress', (eventData) => {
+        const downloadedByes = eventData.loaded;
+        const totalBytes = eventData.total;
+        const progress = downloadedByes / totalBytes * 100;
+        bar.width(`${progress}`);
+    });
+
+    xhr.addEventListener('loadend', () => {
+        bar.width('100%');
+        setTimeout(() => bar.width('0%'), 500)
+    });
+
+}
+
+tbodyElm.on('click', '.delete', (eventData) => {
+    // XHR-> Jquery AJAX
+    const code = +$(eventData.target).parents("tr").children('td:first-child').text().replace('I', "");
+    const jqxhr = $.ajax(`http://localhost:8080/pos/products/${code}`, {method: 'DELETE'});
+    jqxhr.done(()=>{
+        showToast('success', "Deleted", "Product deleted successfully");
+        $(eventData.target).tooltip('dispose');
+        getProducts();
+    })
+    jqxhr.fail(()=>{
+        showToast('error', "Failed", "Failed to delete the product try again");
+
+    })
+
+
+})

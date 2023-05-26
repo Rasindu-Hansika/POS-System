@@ -76,19 +76,23 @@ public class CustomerController {
     }
 
 
-//    @DeleteMapping
-//    public ResponseEntity<?> deleteCustomer(@RequestBody CustomerDTO customer) {
-//        try (var connection = bds.getConnection()) {
-//            var stm = connection.prepareStatement("delete  from customer where id=?");
-//            System.out.println(customer.getId());
-//            stm.setInt(1, customer.getId());
-//            return new ResponseEntity<>(HttpStatus.CREATED);
-//        } catch (SQLException e) {
-//            if (e.getSQLState().equals("42000")) {
-//                return new ResponseEntity<>(new ResponseErrorDTO(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
-//            } else {
-//                return new ResponseEntity<>(new ResponseErrorDTO(500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//        }
-//    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable("id") String customerId) {
+        try (var connection = bds.getConnection()) {
+            var stm = connection.prepareStatement("delete  from customer where id=?");
+            stm.setString(1, customerId);
+            var affectedRows = stm.executeUpdate();
+            if(affectedRows==1){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else {
+                return new ResponseEntity<>(new ResponseErrorDTO(404, "Invalid CustomerID"), HttpStatus.NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000")) {
+                return new ResponseEntity<>(new ResponseErrorDTO(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>(new ResponseErrorDTO(500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 }

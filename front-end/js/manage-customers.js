@@ -47,7 +47,7 @@ btnSave.on("click", () => {
             $('#loader').css('visibility', 'hidden');
             if (xhr.status === 201) {
                 customer = JSON.parse(xhr.responseText);
-                createRow(customer);
+                getCustomers();
                 resetForm(true);
                 txtName.trigger("focus");
                 showToast("success", "Success", "Customer has been saved successfully");
@@ -129,14 +129,14 @@ function createRow(customer) {
     <td>
         <div class="actions d-flex gap-3 justify-content-center">
             <svg data-bs-toggle="tooltip" data-bs-title="Edit Customer" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                class="bi bi-pencil-square" viewBox="0 0 16 16">
+                class="bi bi-pencil-square edit" viewBox="0 0 16 16">
                 <path
                     d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z" />
                 <path fill-rule="evenodd"
                     d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z" />
             </svg>
             <svg data-bs-toggle="tooltip" data-bs-title="Delete Customer" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
-                class="bi bi-trash" viewBox="0 0 16 16">
+                class="bi bi-trash delete" viewBox="0 0 16 16">
                 <path
                     d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                 <path
@@ -179,6 +179,8 @@ function getCustomers() {
                 customerList.forEach(customer => {
                     createRow(customer)
                 });
+                const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
                 if (customerList.length) {
                     $("#tbl-customers tfoot").hide();
                 } else {
@@ -196,14 +198,9 @@ function getCustomers() {
     xhr.open("GET", "http://localhost:8080/pos/customers" + query, true);
 
 
-    const tfoot =$('#tbl-customers tfoot tr td:first-child');
+    const tfoot = $('#tbl-customers tfoot tr td:first-child');
     xhr.addEventListener('loadstart', () => tfoot.text('Please Wait!'));
     xhr.addEventListener('loadend', () => tfoot.text('No Customer Records are found'));
-
-
-
-
-
     xhr.send();
 }
 
@@ -230,28 +227,19 @@ function progressBar(xhr) {
 
 }
 
-// tbodyElm.on('click','tr>td:last-child>div>svg:last-child',()=>{
-//     $(document.activeElement).css('background-color','red')
-//     const row=$(document.activeElement).children();
-//     alert(row.text());
-//     const idNew=$(document.activeElement).parents('tr').children("td:first-child").text();
-//     alert(idNew);
-//     let customer = {idNew};
-//     const xhr = new XMLHttpRequest();
-//     xhr.addEventListener('readystatechange', () => {
-//         if (xhr.readyState === 4) {
-//             if (xhr.status === 200 || xhr.status===204 || xhr.status===202) {
-//                 row.remove();
-//                 showToast("success", "Success", "Customer has been Removed successfully");
-//             } else {
-//                 const errorObj = JSON.parse(xhr.responseText);
-//                 showToast("error", 'Failed', errorObj.message);
-//
-//             }
-//         }
-//     });
-//     xhr.open("DELETE", 'http://localhost:8080/pos/customers', true);
-//     xhr.setRequestHeader('Content-Type', 'application/json');
-//     xhr.send(JSON.stringify(customer));
-//
-// })
+tbodyElm.on('click', '.delete', (eventData) => {
+    // XHR-> Jquery AJAX
+    const id = +$(eventData.target).parents("tr").children('td:first-child').text().replace('C', "");
+    const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {method: 'DELETE'});
+    jqxhr.done(()=>{
+        showToast('success', "Deleted", "customer deleted successfully");
+        $(eventData.target).tooltip('dispose');
+        getCustomers();
+    })
+    jqxhr.fail(()=>{
+            showToast('error', "Failed", "Failed to delete the customer try again");
+
+        })
+
+
+})

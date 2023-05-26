@@ -70,4 +70,24 @@ public class ProductController {
             return new ResponseEntity<>(new ResponseErrorDTO(500,e.getMessage()),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @DeleteMapping("/{code}")
+    public ResponseEntity<?> deleteCustomer(@PathVariable("code") String productCode) {
+        try (var connection = bds.getConnection()) {
+            var stm = connection.prepareStatement("delete  from products where code=?");
+            stm.setString(1, productCode);
+            var affectedRows = stm.executeUpdate();
+            if(affectedRows==1){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else {
+                return new ResponseEntity<>(new ResponseErrorDTO(404, "Invalid productCode"), HttpStatus.NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000")) {
+                return new ResponseEntity<>(new ResponseErrorDTO(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>(new ResponseErrorDTO(500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 }

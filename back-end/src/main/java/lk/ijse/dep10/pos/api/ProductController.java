@@ -90,4 +90,28 @@ public class ProductController {
             }
         }
     }
+
+
+    @PatchMapping("/{code}")
+    public  ResponseEntity<?> updateCustomer(@PathVariable("code") int productCode,@RequestBody ProductDTO product){
+        try (var connection = bds.getConnection()) {
+            var stm = connection.prepareStatement("update   products set description=?,quantity=?,price=? where code=?");
+            stm.setString(1, product.getDescription());
+            stm.setInt(2, product.getQuantity());
+            stm.setBigDecimal(3, product.getPrice());
+            stm.setInt(4, productCode);
+            var affectedRows = stm.executeUpdate();
+            if(affectedRows==1){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else {
+                return new ResponseEntity<>(new ResponseErrorDTO(404, "Product Code Not Found"), HttpStatus.NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000")) {
+                return new ResponseEntity<>(new ResponseErrorDTO(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>(new ResponseErrorDTO(500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
 }

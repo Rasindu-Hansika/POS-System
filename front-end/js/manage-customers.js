@@ -229,8 +229,21 @@ function progressBar(xhr) {
 
 tbodyElm.on('click', '.delete', (eventData) => {
     // XHR-> Jquery AJAX
+    /*
+    * const jqxhr= $.ajax(url,{
+    *                               method:'GET',
+    *                               contentType:'application/json',
+    *                               data:'request body',
+    *                                                   });
+    * jqxhr.done((response,status)=>{}); if response is success
+    * jqxhr.fail(()=>{}); if response is unsuccessful
+    * jqxhr.always(()=>{}); this will work always no matter wht is the response is.
+    *
+    * */
     const id = +$(eventData.target).parents("tr").children('td:first-child').text().replace('C', "");
-    const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {method: 'DELETE'});
+    const xhr = new XMLHttpRequest();
+    const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {method: 'DELETE',xhr:()=>xhr});
+    progressBar(xhr);
     jqxhr.done(()=>{
         showToast('success', "Deleted", "customer deleted successfully");
         $(eventData.target).tooltip('dispose');

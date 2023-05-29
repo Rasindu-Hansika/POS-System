@@ -215,7 +215,9 @@ function progressBar(xhr) {
 tbodyElm.on('click', '.delete', (eventData) => {
     // XHR-> Jquery AJAX
     const code = +$(eventData.target).parents("tr").children('td:first-child').text().replace('I', "");
-    const jqxhr = $.ajax(`http://localhost:8080/pos/products/${code}`, {method: 'DELETE'});
+    const xhr = new XMLHttpRequest();
+    const jqxhr = $.ajax(`http://localhost:8080/pos/products/${code}`, {method: 'DELETE',xhr:()=> xhr});
+    progressBar(xhr);
     jqxhr.done(()=>{
         showToast('success', "Deleted", "Product deleted successfully");
         $(eventData.target).tooltip('dispose');

@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POS System - Place Order</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/place-order.css">
+    <script defer src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script defer src="node_modules/@popperjs/core/dist/umd/popper.min.js"></script>
+    <script defer src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script defer src="js/main.js"></script>
+    <script type="module" defer src="js/place-order.js"></script>
+</head>
+
+<body class="container-xl gx-0 border-end border-start">
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none">
+    <symbol id="bootstrap" viewBox="0 0 16 16">
+        <path
+                fill-rule="evenodd"
+                d="M10.5 3.5a2.5 2.5 0 0 0-5 0V4h5v-.5zm1 0V4H15v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V4h3.5v-.5a3.5 3.5 0 1 1 7 0zm-.646 5.354a.5.5 0 0 0-.708-.708L7.5 10.793 6.354 9.646a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"
+        />
+    </symbol>
+    <symbol id="home" viewBox="0 0 16 16">
+        <path
+                d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4.5a.5.5 0 0 0 .5-.5v-4h2v4a.5.5 0 0 0 .5.5H14a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146zM2.5 14V7.707l5.5-5.5 5.5 5.5V14H10v-4a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v4H2.5z"
+        />
+    </symbol>
+    <symbol id="orders" viewBox="0 0 16 16">
+        <path
+                d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .49.598l-1 5a.5.5 0 0 1-.465.401l-9.397.472L4.415 11H13a.5.5 0 0 1 0 1H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l.84 4.479 9.144-.459L13.89 4H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
+        />
+    </symbol>
+    <symbol id="search" viewBox="0 0 16 16">
+        <path
+                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"
+        />
+    </symbol>
+    <symbol id="customers" viewBox="0 0 16 16">
+        <path
+                d="M1.5 1a.5.5 0 0 0-.5.5v3a.5.5 0 0 1-1 0v-3A1.5 1.5 0 0 1 1.5 0h3a.5.5 0 0 1 0 1h-3zM11 .5a.5.5 0 0 1 .5-.5h3A1.5 1.5 0 0 1 16 1.5v3a.5.5 0 0 1-1 0v-3a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 1-.5-.5zM.5 11a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 1 0 1h-3A1.5 1.5 0 0 1 0 14.5v-3a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v3a1.5 1.5 0 0 1-1.5 1.5h-3a.5.5 0 0 1 0-1h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5z"
+        />
+        <path
+                d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm8-9a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"
+        />
+    </symbol>
+    <symbol id="products" viewBox="0 0 16 16">
+        <path
+                d="M4 2v2H2V2h2zm1 12v-2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zm0-5V7a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zm0-5V2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zm5 10v-2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zm0-5V7a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zm0-5V2a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1zM9 2v2H7V2h2zm5 0v2h-2V2h2zM4 7v2H2V7h2zm5 0v2H7V7h2zm5 0h-2v2h2V7zM4 12v2H2v-2h2zm5 0v2H7v-2h2zm5 0v2h-2v-2h2zM12 1a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1h-2zm-1 6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1h-2a1 1 0 0 1-1-1V7zm1 4a1 1 0 0 0-1 1v2a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1h-2z"
+        />
+    </symbol>
+</svg>
+<nav>
+    <div
+            class="d-flex flex-column flex-shrink-0 bg-body-tertiary"
+            style="width: 4.5rem"
+    >
+        <a
+                href="/"
+                title="RAVAN"
+                class="d-block p-3 link-body-emphasis text-decoration-none"
+                data-bs-toggle="tooltip"
+                data-bs-placement="right"
+        >
+            <svg class="bi pe-none" width="40" height="32">
+                <use xlink:href="#bootstrap" />
+            </svg>
+            <span class="visually-hidden">Icon-only</span>
+        </a>
+        <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+            <li class="nav-item">
+                <a
+                        href="index.html"
+                        class="nav-link  py-3 border-bottom rounded-0"
+                        aria-current="page"
+                        title="Home"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                >
+                    <svg
+                            class="bi pe-none"
+                            width="24"
+                            height="24"
+                            role="img"
+                            aria-label="Home"
+                    >
+                        <use xlink:href="#home" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a
+                        href="manage-customer.html"
+                        class="nav-link py-3 border-bottom rounded-0"
+                        title="Manage Customers"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                >
+                    <svg
+                            class="bi pe-none"
+                            width="24"
+                            height="24"
+                            role="img"
+                            aria-label="Customers"
+                    >
+                        <use xlink:href="#customers" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a
+                        href="manage-items.html"
+                        class="nav-link py-3 border-bottom rounded-0"
+                        title="Manage Products"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                >
+                    <svg
+                            class="bi pe-none"
+                            width="24"
+                            height="24"
+                            role="img"
+                            aria-label="Products"
+                    >
+                        <use xlink:href="#products" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a
+                        href="place-orders.html"
+                        class="nav-link py-3 active border-bottom rounded-0"
+                        title="Place Order"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                >
+                    <svg
+                            class="bi pe-none"
+                            width="24"
+                            height="24"
+                            role="img"
+                            aria-label="Orders"
+                    >
+                        <use xlink:href="#orders" />
+                    </svg>
+                </a>
+            </li>
+            <li>
+                <a
+                        href="search-orders.html"
+                        class="nav-link py-3 border-bottom rounded-0"
+                        title="Search"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="right"
+                >
+                    <svg
+                            class="bi pe-none"
+                            width="24"
+                            height="24"
+                            role="img"
+                            aria-label="Search"
+                    >
+                        <use xlink:href="#search" />
+                    </svg>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<main class="row gx-0  w-100">
+    <section class="col-12 col-lg-5">
+        <section class="p-2">
+            <div class="p-2 fw-bold">Select Customer</div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="txt-customer"
+                       placeholder="Customer ID / Contact Number">
+                <label for="txt-customer">Customer ID / Contact Number</label>
+            </div>
+            <div class="d-flex p-2 justify-content-between">
+                <span class="walk-in">Walk-in Customer</span>
+                <svg data-bs-toggle="tooltip" data-bs-title="Clear Customer" id="btn-clear-customer"
+                     xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor"
+                     class="bi bi-trash disabled"
+                     viewBox="0 0 16 16">
+                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                    <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                </svg>
+            </div>
+        </section>
+        <div class="border-top"></div>
+        <section class="p-2">
+            <div class="fw-bold p-2">Select Item</div>
+            <div class="form-floating">
+                <input type="text" class="form-control" id="txt-code"
+                       placeholder="Item Code">
+                <label for="txt-code">Item Code</label>
+            </div>
+            <div id="item-info" class="rounded border mt-2 bg-info-subtle d-none">
+                <div class="p-2 text-center">
+                    <div class="fw-bold">Description</div>
+                    <div>Logitech Keyboard</div>
+                </div>
+                <div class="p-2 text-center">
+                    <div class="fw-bold">Unit Price</div>
+                    <div>LKR 1250.00</div>
+                </div>
+                <div class="p-2 text-center">
+                    <div class="fw-bold">Stock Status</div>
+                    <div>In Stock: 5</div>
+                </div>
+            </div>
+            <form id="frm-order" class="d-flex mt-2 gap-2 d-none">
+                <div class="form-floating flex-grow-1">
+                    <input type="number" class="form-control" id="txt-qty"
+                           placeholder="Enter Qty." value="1">
+                    <label for="txt-qty">Enter Qty.</label>
+                </div>
+                <button class="btn btn-primary">+ Add to Cart</button>
+            </form>
+        </section>
+    </section>
+    <section class="col-12 col-lg-7 p-2 ">
+        <div class="fw-bold p-2 d-flex justify-content-between">
+            <span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                     class="bi bi-cart-check" viewBox="0 0 16 16">
+                      <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
+                      <path d="M.5 1a.5.5 0 0 0 0 1h1.11l.401 1.607 1.498 7.985A.5.5 0 0 0 4 12h1a2 2 0 1 0 0 4 2 2 0 0 0 0-4h7a2 2 0 1 0 0 4 2 2 0 0 0 0-4h1a.5.5 0 0 0 .491-.408l1.5-8A.5.5 0 0 0 14.5 3H2.89l-.405-1.621A.5.5 0 0 0 2 1H.5zm3.915 10L3.102 4h10.796l-1.313 7h-8.17zM6 14a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm7 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>
+                Cart Details
+            </span>
+            <span id="order-date-time"></span>
+        </div>
+        <div id="tbl-order-wrapper" class="border">
+            <table id="tbl-order" class="table table-bordered table-hover my-0">
+                <thead class="border table-light">
+                <tr>
+                    <th>Item</th>
+                    <th>Qty.</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <div class="fw-bold">I001</div>
+                                <div>Logitech Keyboard</div>
+                            </div>
+                            <svg data-bs-toggle="tooltip" data-bs-title="Remove Item" xmlns="http://www.w3.org/2000/svg"
+                                 width="32" height="32" fill="currentColor" class="bi bi-trash delete"
+                                 viewBox="0 0 16 16">
+                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z"/>
+                                <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z"/>
+                            </svg>
+                        </div>
+                    </td>
+                    <td>
+                        5
+                    </td>
+                    <td>
+                        1,250.00
+                    </td>
+                    <td>
+                        6,250.00
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot>
+                <tr>
+                    <td colspan="4" class="text-center">
+                        No Items has been placed in the cart yet !
+                    </td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+        <div class="fs-4 justify-content-between d-flex mt-1 p-2">
+            <span>Net Total</span>
+            <span class="fw-bold">LKR 0.00</span>
+        </div>
+        <div class="d-flex justify-content-end">
+            <button class=" btn fw-bold btn-outline-primary fs-5 d-flex align-items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-basket2"
+                     viewBox="0 0 16 16">
+                    <path d="M4 10a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 0 1 2 0v2a1 1 0 0 1-2 0v-2zm3 0a1 1 0 1 1 2 0v2a1 1 0 0 1-2 0v-2z"/>
+                    <path d="M5.757 1.071a.5.5 0 0 1 .172.686L3.383 6h9.234L10.07 1.757a.5.5 0 1 1 .858-.514L13.783 6H15.5a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-.623l-1.844 6.456a.75.75 0 0 1-.722.544H3.69a.75.75 0 0 1-.722-.544L1.123 8H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6h1.717L5.07 1.243a.5.5 0 0 1 .686-.172zM2.163 8l1.714 6h8.246l1.714-6H2.163z"/>
+                </svg>
+                Place Order
+            </button>
+        </div>
+    </section>
+</main>
+</body>
+</html>

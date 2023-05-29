@@ -95,4 +95,56 @@ public class CustomerController {
             }
         }
     }
+
+    @PatchMapping("/{id}")
+    public  ResponseEntity<?> updateCustomer(@PathVariable("id") int customerId,@RequestBody CustomerDTO customer){
+        try (var connection = bds.getConnection()) {
+            var stm = connection.prepareStatement("update   customer set id=?,address=?,contact=? where id=?");
+            stm.setString(1, customer.getName());
+            stm.setString(2, customer.getAddress());
+            stm.setString(3, customer.getContact());
+            stm.setInt(4, customerId);
+            var affectedRows = stm.executeUpdate();
+            if(affectedRows==1){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else {
+                return new ResponseEntity<>(new ResponseErrorDTO(404, "Customer ID Not Found"), HttpStatus.NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            if (e.getSQLState().equals("23000")) {
+                return new ResponseEntity<>(new ResponseErrorDTO(HttpStatus.CONFLICT.value(), e.getMessage()), HttpStatus.CONFLICT);
+            } else {
+                return new ResponseEntity<>(new ResponseErrorDTO(500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        }
+    }
+
+
+
+
+    @GetMapping("/{idOrContact}")
+    public ResponseEntity<?> getCustomer(@PathVariable String idOrContact){
+        try (var connection = bds.getConnection()) {
+            var pstm = connection.prepareStatement("select * from customer where id=? or contact=?");
+            pstm.setString(1,idOrContact);
+            pstm.setString(2,idOrContact);
+            var resultSet = pstm.executeQuery();
+            if (resultSet.next()){
+                int id = resultSet.getInt("id");
+                String name = resultSet.getString("name");
+                String contact = resultSet.getString("contact");
+                String address = resultSet.getString("address");
+                var customerDTO = new CustomerDTO(id, name, contact, address);
+                return new ResponseEntity<>(customerDTO,HttpStatus.OK);
+            }else {
+                var error = new ResponseErrorDTO(404, "No customer found");
+                return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            var error = new ResponseErrorDTO(500, "Something went wrong!");
+            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
 }

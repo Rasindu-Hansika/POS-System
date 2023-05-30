@@ -32,7 +32,7 @@ public class ProductController {
             var generatedKeys = pstm.getGeneratedKeys();
             generatedKeys.next();
             int code= generatedKeys.getInt(1);
-            product.setCode(code);
+            product.setCode(String.valueOf(code));
             return new ResponseEntity<>(product, HttpStatus.CREATED);
         } catch (SQLException e) {
             if (e.getSQLState().equals("23000")) {
@@ -55,7 +55,7 @@ public class ProductController {
             var rst = pstm.executeQuery();
             List<ProductDTO> productDTOs = new ArrayList<>();
             while (rst.next()){
-                var code = rst.getInt("code");
+                var code = rst.getString("code");
                 var description = rst.getString("description");
                 var quantity = rst.getInt("quantity");
                 var price = rst.getBigDecimal("price");
@@ -113,5 +113,32 @@ public class ProductController {
                 return new ResponseEntity<>(new ResponseErrorDTO(500, e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
+    }
+
+
+    @GetMapping("/{code}")
+    public  ResponseEntity<?>  getItem(@PathVariable String code){
+        try (var connection = bds.getConnection()) {
+            var preparedStatement = connection.prepareStatement("select * from products where code=?");
+            preparedStatement.setString(1,code);
+            var resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()){
+                var cd = resultSet.getString("code");
+                var description = resultSet.getString("description");
+                var quantity = resultSet.getInt("quantity");
+                var price = resultSet.getBigDecimal("price");
+                ProductDTO productDTO= new ProductDTO(cd, description, quantity, price);
+                return new ResponseEntity<>(productDTO, HttpStatus.OK);
+            }else {
+                ResponseErrorDTO errorDTO = new ResponseErrorDTO(404, "Item not Found");
+                return new ResponseEntity<>(errorDTO, HttpStatus.NOT_FOUND);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            ResponseErrorDTO errorDTO = new ResponseErrorDTO(500, "Failed to fetch the data");
+            return new ResponseEntity<>(errorDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
     }
 }

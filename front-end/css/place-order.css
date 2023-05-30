@@ -61,3 +61,7 @@ main > section:first-child {
     color: red;
     cursor: pointer;
 }
+.out-of-stock{
+    color: red;
+    font-weight: bold;
+}

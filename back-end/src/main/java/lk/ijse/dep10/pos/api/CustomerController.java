@@ -75,7 +75,6 @@ public class CustomerController {
 
     }
 
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCustomer(@PathVariable("id") String customerId) {
         try (var connection = bds.getConnection()) {
@@ -121,30 +120,4 @@ public class CustomerController {
 
 
 
-
-    @GetMapping("/{idOrContact}")
-    public ResponseEntity<?> getCustomer(@PathVariable String idOrContact){
-        try (var connection = bds.getConnection()) {
-            var pstm = connection.prepareStatement("select * from customer where id=? or contact=?");
-            pstm.setString(1,idOrContact);
-            pstm.setString(2,idOrContact);
-            var resultSet = pstm.executeQuery();
-            if (resultSet.next()){
-                int id = resultSet.getInt("id");
-                String name = resultSet.getString("name");
-                String contact = resultSet.getString("contact");
-                String address = resultSet.getString("address");
-                var customerDTO = new CustomerDTO(id, name, contact, address);
-                return new ResponseEntity<>(customerDTO,HttpStatus.OK);
-            }else {
-                var error = new ResponseErrorDTO(404, "No customer found");
-                return new ResponseEntity<>(error,HttpStatus.NOT_FOUND);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            var error = new ResponseErrorDTO(500, "Something went wrong!");
-            return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
 }

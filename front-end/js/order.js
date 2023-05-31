@@ -61,5 +61,11 @@ export class Order {
         this.getItem(code).quantity = qty;
         this.#updateOrder();
 }
+    clear(){
+        this.customer=null;
+        this.itemList = [];
+        this.#updateOrder();
+        this.subscriber(this.getTotal());
+    }
 
 }

@@ -27,7 +27,7 @@ create table if not exists `order`
 create table if not exists `order_details`
 (
     order_id  int            not null,
-    item_code int,
+    item_code int not null ,
     price     decimal(10, 2) not null,
     qty       int            not null,
     constraint fk_order_detail primary key (order_id, item_code),

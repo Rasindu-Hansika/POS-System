@@ -11,7 +11,7 @@ alter  table  customer add  constraint uk_contact unique (contact);
 
 create table if not exists products
 (
-    code      varchar(50) primary key,
+    code      int auto_increment primary key,
     description    varchar(100) not null unique ,
     quantity int not null,
     price int not null
@@ -27,7 +27,7 @@ create table if not exists `order`
 create table if not exists `order_details`
 (
     order_id  int            not null,
-    item_code varchar(50),
+    item_code int not null ,
     price     decimal(10, 2) not null,
     qty       int            not null,
     constraint fk_order_detail primary key (order_id, item_code),

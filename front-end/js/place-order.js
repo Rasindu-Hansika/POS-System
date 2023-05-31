@@ -2,6 +2,8 @@
 import {DateTimeFormatter, LocalDateTime} from '../node_modules/@js-joda/core/dist/js-joda.esm.js';
 import Big from "../node_modules/big.js/big.mjs";
 import {Order} from "./order.js";
+import {progressBar} from "./main.js"
+import {showToast} from "./main.js"
 
 /* Module Level Variables, Constants */
 const REST_API_BASE_URL = 'http://localhost:8080/pos';
@@ -17,6 +19,7 @@ const itemInfo = $("#item-info");
 const frmOrder = $("#frm-order");
 const txtQuantity = $("#txt-qty");
 const netTotal = $("#net-total");
+const btnPlaceOrder = $("#btn-place-order");
 const tfoot = $("tfoot");
 
 let customer = null;
@@ -91,6 +94,8 @@ tbodyElm.on('click','svg.delete',(e)=>{
     $(e.target).parents('tr').remove();
     if (!order.itemList.length) tfoot.show();
 })
+
+btnPlaceOrder.on("click", () => placeOrder());
 
 
 
@@ -203,6 +208,42 @@ function updateOrderDetails() {
     $('#customer-name').text(order.customer?.name);
     order.itemList.forEach(item => addItemToCart(item));
     netTotal.text(formatPrice(order.getTotal()));
+
+}
+
+function placeOrder(){
+    if(!order.itemList.length) return;
+    order.dateTime = orderDateTimeElm.text();
+    btnPlaceOrder.attr("disabled", true);
+    const xhr = new XMLHttpRequest();
+
+    const jqxhr = $.ajax(`${REST_API_BASE_URL}/orders`, {
+        method:"POST",
+        contentType:"application/json",
+        data: JSON.stringify(order),
+        xhr: () =>xhr
+
+    })
+
+    progressBar(xhr);
+    jqxhr.done((orderId)=>{
+    //     Todo : Print the order
+        order.clear();
+        $("#btn-clear-customer").trigger("click");
+        txtCode.val("");
+        txtCode.trigger("input");
+        tbodyElm.empty();
+        tfoot.show();
+        showToast("success", "Success", "Order has been placed successfully");
+
+
+    })
+    jqxhr.fail(()=>{
+        showToast("error", "Failed", "Failed to Place the order,Try again");
+    })
+    jqxhr.always(()=>{
+        btnPlaceOrder.removeAttr("disabled");
+    })
 
 }
 

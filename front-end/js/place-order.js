@@ -2,8 +2,9 @@
 import {DateTimeFormatter, LocalDateTime} from '../node_modules/@js-joda/core/dist/js-joda.esm.js';
 import Big from "../node_modules/big.js/big.mjs";
 import {Order} from "./order.js";
-import {progressBar} from "./main.js"
-import {showToast} from "./main.js"
+import {progressBar, showToast} from "./main.js"
+import {getBillDesignHTML} from "./bill-design.js";
+import {formatPrice} from "./main.js";
 
 /* Module Level Variables, Constants */
 const REST_API_BASE_URL = 'http://localhost:8080/pos';
@@ -25,7 +26,7 @@ const tfoot = $("tfoot");
 let customer = null;
 let item = null;
 let socket = null;
-let order = new Order((total)=>netTotal.text(formatPrice(total)));
+let order = new Order((total) => netTotal.text(formatPrice(total)));
 
 /* Initialization Logic */
 setDateTime();
@@ -64,20 +65,20 @@ txtCode.on('change', () => findItem());
 
 frmOrder.on("submit", (e) => {
     e.preventDefault();
-    if(+txtQuantity.val()<=0 || +txtQuantity.val()>item.quantity){
+    if (+txtQuantity.val() <= 0 || +txtQuantity.val() > item.quantity) {
         txtQuantity.addClass("is-invalid");
         txtQuantity.trigger("select");
         return;
     }
     item.quantity = +txtQuantity.val();
-    if (order.containItem(item.code)){
+    if (order.containItem(item.code)) {
         order.updateQty(item.code, order.getItem(item.code).quantity + item.quantity);
         const codeElm = Array.from(tbodyElm.find("tr td:first-child .code")).find(codeElm => $(codeElm).text() === item.code);
         const qtyElm = $(codeElm).parents("tr").find("td:nth-child(2)");
         const priceElm = $(codeElm).parents("tr").find("td:nth-child(4)");
         qtyElm.text(order.getItem(item.code).quantity);
         priceElm.text(formatPrice(Big(order.getItem(item.code).quantity).times(item.price)));
-    }else{
+    } else {
         addItemToCart(item);
         order.addItem(item);
     }
@@ -88,7 +89,7 @@ frmOrder.on("submit", (e) => {
     txtQuantity.val("1");
 })
 
-tbodyElm.on('click','svg.delete',(e)=>{
+tbodyElm.on('click', 'svg.delete', (e) => {
     const itemCode = $(e.target).parents('tr').find('td:first-child .code').text();
     order.deleteItem(itemCode);
     $(e.target).parents('tr').remove();
@@ -96,7 +97,6 @@ tbodyElm.on('click','svg.delete',(e)=>{
 })
 
 btnPlaceOrder.on("click", () => placeOrder());
-
 
 
 /* Functions */
@@ -194,14 +194,6 @@ function addItemToCart(item) {
     tbodyElm.append(trElm);
 }
 
-function formatPrice(number) {
-    return new Intl.NumberFormat("en-LK", {
-        style: "decimal",
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    }).format(number);
-}
-
 function updateOrderDetails() {
     const id = order.customer?.id.toString().padStart(3, "0");
     txtCustomer.val(id ? "C" + id : "");
@@ -211,23 +203,23 @@ function updateOrderDetails() {
 
 }
 
-function placeOrder(){
-    if(!order.itemList.length) return;
+function placeOrder() {
+    if (!order.itemList.length) return;
     order.dateTime = orderDateTimeElm.text();
     btnPlaceOrder.attr("disabled", true);
     const xhr = new XMLHttpRequest();
 
     const jqxhr = $.ajax(`${REST_API_BASE_URL}/orders`, {
-        method:"POST",
-        contentType:"application/json",
+        method: "POST",
+        contentType: "application/json",
         data: JSON.stringify(order),
-        xhr: () =>xhr
+        xhr: () => xhr
 
     })
 
     progressBar(xhr);
-    jqxhr.done((orderId)=>{
-    //     Todo : Print the order
+    jqxhr.done((orderId) => {
+        printBill(orderId);
         order.clear();
         $("#btn-clear-customer").trigger("click");
         txtCode.val("");
@@ -238,13 +230,21 @@ function placeOrder(){
 
 
     })
-    jqxhr.fail(()=>{
+    jqxhr.fail(() => {
         showToast("error", "Failed", "Failed to Place the order,Try again");
     })
-    jqxhr.always(()=>{
+    jqxhr.always(() => {
         btnPlaceOrder.removeAttr("disabled");
     })
 
 }
+
+function printBill(orderId) {
+    const billWindow = open("", `Order ${orderId}`);
+    billWindow.document.write(getBillDesignHTML(order,orderId));
+
+}
+
+
 
 

@@ -42,3 +42,10 @@ export function showToast(type, header, body) {
     $("#toast .toast-body").text(body);
     $("#toast .toast").toast("show");
 }
+export function formatPrice(number) {
+    return new Intl.NumberFormat("en-LK", {
+        style: "decimal",
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    }).format(number);
+}

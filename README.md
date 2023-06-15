@@ -10,7 +10,7 @@ A comprehensive Point of Sale (POS) system that allows administrators to efficie
 <img src="img/4.png"  width="300" height="200" >
 <img src="img/5.png"  width="300" height="200" >
 <img src="img/6.png"  width="300" height="200" >
-<img src="img/7.png"  width="300" height="200" >
+<img src="img/7.png"  width="200" height="200" >
 </div>
 
 ## Features

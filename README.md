@@ -4,13 +4,13 @@ A comprehensive Point of Sale (POS) system that allows administrators to efficie
 #
 
 <div style="display:flex ">
-<img src="img/1.png"  width="450" height="300" >
-<img src="img/2.png"  width="450" height="300" >
-<img src="img/3.png"  width="450" height="300" >
-<img src="img/4.png"  width="450" height="300" >
-<img src="img/5.png"  width="450" height="300" >
-<img src="img/6.png"  width="450" height="300" >
-<img src="img/7.png"  width="400" height="450" >
+<img src="img/1.png"  width="300" height="200" >
+<img src="img/2.png"  width="300" height="200" >
+<img src="img/3.png"  width="300" height="200" >
+<img src="img/4.png"  width="300" height="200" >
+<img src="img/5.png"  width="300" height="200" >
+<img src="img/6.png"  width="300" height="200" >
+<img src="img/7.png"  width="300" height="200" >
 </div>
 
 ## Features

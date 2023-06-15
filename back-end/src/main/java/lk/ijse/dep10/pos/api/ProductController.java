@@ -24,12 +24,12 @@ public class ProductController {
     @PostMapping
     public ResponseEntity<?> saveProduct (@RequestBody ProductDTO product){
         try (var connection = bds.getConnection()) {
-            var pstm = connection.prepareStatement("insert into products(description, quantity, price) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
-            pstm.setString(1, product.getDescription());
-            pstm.setInt(2, product.getQuantity());
-            pstm.setBigDecimal(3, product.getPrice());
-            pstm.executeUpdate();
-            var generatedKeys = pstm.getGeneratedKeys();
+            var pStm = connection.prepareStatement("insert into products(description, quantity, price) values (?,?,?)", Statement.RETURN_GENERATED_KEYS);
+            pStm.setString(1, product.getDescription());
+            pStm.setInt(2, product.getQuantity());
+            pStm.setBigDecimal(3, product.getPrice());
+            pStm.executeUpdate();
+            var generatedKeys = pStm.getGeneratedKeys();
             generatedKeys.next();
             int code= generatedKeys.getInt(1);
             product.setCode(String.valueOf(code));

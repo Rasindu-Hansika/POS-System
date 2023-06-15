@@ -12,9 +12,9 @@ alter  table  customer add  constraint uk_contact unique (contact);
 create table if not exists products
 (
     code      int auto_increment primary key,
-    description    varchar(100) not null unique ,
-    quantity int not null,
-    price int not null
+    description    varchar(100) not null  ,
+    qty int not null,
+    unit_price int not null
 );
 
 create table if not exists `order`

@@ -44,7 +44,7 @@ public class OrderController {
 
             for (ProductDTO orderItem : order.getItemList()) {
                 var stmOrderDetail = connection.prepareStatement("insert into  order_details(order_id, item_code, price, qty) values (?,?,?,?)");
-                var stmStockUpdate = connection.prepareStatement("update products set quantity=quantity-? where code=?");
+                var stmStockUpdate = connection.prepareStatement("update products set quantity=? where code=?");
                 stmOrderDetail.setInt(1, orderId);
                 stmOrderDetail.setInt(2, Integer.parseInt(orderItem.getCode()));
                 stmOrderDetail.setBigDecimal(3, orderItem.getPrice());

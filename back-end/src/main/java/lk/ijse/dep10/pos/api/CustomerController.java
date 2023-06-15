@@ -98,7 +98,7 @@ public class CustomerController {
     @PatchMapping("/{id}")
     public  ResponseEntity<?> updateCustomer(@PathVariable("id") int customerId,@RequestBody CustomerDTO customer){
         try (var connection = bds.getConnection()) {
-            var stm = connection.prepareStatement("update   customer set id=?,address=?,contact=? where id=?");
+            var stm = connection.prepareStatement("update  customer set name=?,address=?,contact=? where id=?");
             stm.setString(1, customer.getName());
             stm.setString(2, customer.getAddress());
             stm.setString(3, customer.getContact());

@@ -38,11 +38,11 @@ btnSave.on("click", () => {
     const contact = txtContact.val().trim();
 
     let customer = {name, contact, address}
-    // Todo:Send as request to the server to save the customer
-    //1.create a XHR object
+
+
     const xhr = new XMLHttpRequest();
 
-    //2.Set an event listener to listen  readyState change
+
     xhr.addEventListener('readystatechange', () => {
         if (xhr.readyState === 4) {
             [txtId, txtName, txtName, txtAddress, btnSave].forEach(txt => {
@@ -63,13 +63,13 @@ btnSave.on("click", () => {
         }
     });
 
-    //3. Let's open the request
+
     xhr.open("POST", 'http://localhost:8080/pos/customers', true);
 
-    //4.let's Set Headers
+
     xhr.setRequestHeader('Content-Type', 'application/json');
     progressBar(xhr);
-    //5.Sent the Request
+
     xhr.send(JSON.stringify(customer));
 
     [txtId, txtName, txtName, txtAddress, btnSave].forEach(txt => {
@@ -128,7 +128,7 @@ function createRow(customer) {
     <tr>
     <td class="text-center">${formatCustomerId(customer.id)}</td>
     <td>${customer.name}</td>
-    <td class="d-none d-xl-table-cell">${customer.address}/td>
+    <td class="d-none d-xl-table-cell">${customer.address}</td>
     <td class="contact text-center">${customer.contact}</td>
     <td>
         <div class="actions d-flex gap-3 justify-content-center">
@@ -199,18 +199,7 @@ txtSearch.on('input', () => {
 
 
 tbodyElm.on('click', '.delete', (eventData) => {
-    // XHR-> Jquery AJAX
-    /*
-    * const jqxhr= $.ajax(url,{
-    *                               method:'GET',
-    *                               contentType:'application/json',
-    *                               data:'request body',
-    *                                                   });
-    * jqxhr.done((response,status)=>{}); if response is success
-    * jqxhr.fail(()=>{}); if response is unsuccessful
-    * jqxhr.always(()=>{}); this will work always no matter wht is the response is.
-    *
-    * */
+
     const id = +$(eventData.target).parents("tr").children('td:first-child').text().replace('C', "");
     const xhr = new XMLHttpRequest();
     const jqxhr = $.ajax(`http://localhost:8080/pos/customers/${id}`, {method: 'DELETE',xhr:()=>xhr});

@@ -1,4 +1,4 @@
-// import {LocalDateTime, DateTimeFormatter} from '@js-joda/core';
+
 import {DateTimeFormatter, LocalDateTime} from '../node_modules/@js-joda/core/dist/js-joda.esm.js';
 import Big from "../node_modules/big.js/big.mjs";
 import {Order} from "./order.js";
@@ -6,7 +6,7 @@ import {progressBar, showToast} from "./main.js"
 import {getBillDesignHTML} from "./bill-design.js";
 import {formatPrice} from "./main.js";
 
-/* Module Level Variables, Constants */
+
 const REST_API_BASE_URL = 'http://localhost:8080/pos';
 const WS_API_BASE_URL = 'ws://localhost:8080/pos';
 const orderDateTimeElm = $("#order-date-time");
@@ -28,14 +28,13 @@ let item = null;
 let socket = null;
 let order = new Order((total) => netTotal.text(formatPrice(total)));
 
-/* Initialization Logic */
+
 setDateTime();
 tbodyElm.empty();
 socket = new WebSocket(`${WS_API_BASE_URL}/customers-ws`);
 updateOrderDetails();
 
 
-/* Event Handlers & Timers */
 setInterval(setDateTime, 1000);
 
 txtCustomer.on('input', () => findCustomer());
@@ -99,7 +98,7 @@ tbodyElm.on('click', 'svg.delete', (e) => {
 btnPlaceOrder.on("click", () => placeOrder());
 
 
-/* Functions */
+
 function setDateTime() {
     const now = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     orderDateTimeElm.text(now);

@@ -112,7 +112,7 @@ function createRow(product) {
     <tr>
     <td class="text-center">${formatCode(product.code)}</td>
     <td>${product.description}</td>
-    <td class="d-none d-xl-table-cell">${product.quantity}/td>
+    <td class="d-none d-xl-table-cell">${product.quantity}</td>
     <td class="contact text-center">${product.price}</td>
     <td>
         <div class="actions d-flex gap-3 justify-content-center">
@@ -213,7 +213,6 @@ function progressBar(xhr) {
 }
 
 tbodyElm.on('click', '.delete', (eventData) => {
-    // XHR-> Jquery AJAX
     const code = +$(eventData.target).parents("tr").children('td:first-child').text().replace('I', "");
     const xhr = new XMLHttpRequest();
     const jqxhr = $.ajax(`http://localhost:8080/pos/products/${code}`, {method: 'DELETE',xhr:()=> xhr});
